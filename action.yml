@@ -33,4 +33,4 @@ runs:
     - id: clean-up
       name: Clean up intermediary files
       shell: bash
-      run: rm -rf ${{ inputs.dest-dir }}/assets
+      run: rm -rf ${{ inputs.dest-dir }}/assets@1x ${{ inputs.dest-dir }}/assets@2x

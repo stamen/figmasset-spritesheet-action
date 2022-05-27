@@ -1,0 +1,36 @@
+name: Figmasset Spritesheet
+description: Generate Mapbox GL spritesheet with Figmasset
+inputs:
+  figma-file:
+    description: The ID of the Figma file to find icons in
+    required: true
+  figma-token:
+    description: A Figma token that has access to the Figma file
+    required: true
+  figma-frame:
+    description: The ID of a frame in the Figma file to find icons within
+    required: true
+  dest-dir:
+    description: Where to place generated spritesheets
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+
+    - id: download-icons
+      name: Download icons from Figma
+      shell: bash
+      run: npx figmasset-export --file ${{ inputs.figma-file }} --token ${{ inputs.figma-token }} --frame ${{ inputs.figma-frame }} --out ${{ inputs.dest-dir }}/assets
+
+    - id: make-spritesheets
+      name: Generate spritesheet using icons from Figma
+      shell: bash
+      run: npx mbsprite bundle ${{ inputs.dest-dir }} ${{ inputs.dest-dir }}/assets@1x ${{ inputs.dest-dir }}/assets@2x
+
+    - id: clean-up
+      name: Clean up intermediary files
+      shell: bash
+      run: rm -rf ${{ inputs.dest-dir }}/assets
